@@ -7,15 +7,16 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
-    private val fragmentList = mutableListOf<Fragment>()
+    private val fragmentClassList = mutableListOf<Class<out Fragment>>()
+    private var currentFragment: Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        fragmentList.addAll(listOf(HomeFragment(), SettingsFragment()))
+        fragmentClassList.addAll(listOf(HomeFragment::class.java, SettingsFragment::class.java))
 
-        loadFragment(fragmentList.first())
+        loadFragment(0)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
         bottomNavigationView?.menu?.apply {
@@ -26,17 +27,36 @@ class MainActivity : AppCompatActivity() {
         }
 
         bottomNavigationView?.setOnItemSelectedListener {
-            fragmentList.getOrNull(it.itemId)?.let { fragment ->
-                loadFragment(fragment)
+            fragmentClassList.getOrNull(it.itemId)?.let { fragment ->
+                loadFragment(fragmentClassList.indexOf(fragment))
             }
-            true
+            false
         }
     }
 
-    private fun loadFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_container_view_tag, fragment)
-            commit()
+    private fun loadFragment(index: Int) {
+        val transaction = supportFragmentManager.beginTransaction()
+
+        val fragmentClass = fragmentClassList.getOrNull(index)
+        val tag = fragmentClass?.simpleName
+
+        var nextFragment = supportFragmentManager.findFragmentByTag(tag)
+        if (nextFragment == null) {
+            nextFragment = fragmentClass?.newInstance()?.apply {
+                transaction.add(R.id.fragment_container_view_tag, this, tag)
+            }
         }
+
+        currentFragment?.let {
+            transaction.hide(it)
+        }
+
+        currentFragment = nextFragment
+
+        nextFragment?.let {
+            transaction.show(it)
+        }
+
+        transaction.commit()
     }
 }
