@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 data class FragmentItem(
+    val id: Int,
     val label: String,
     val iconRes: Int,
     val fragmentClass: Class<out Fragment>,
@@ -25,8 +26,8 @@ class MainActivity : AppCompatActivity() {
 
         fragmentItemList.addAll(
             listOf(
-                FragmentItem("Home", R.drawable.ic_home_24, HomeFragment::class.java),
-                FragmentItem("Settings", R.drawable.ic_settings_24, SettingsFragment::class.java),
+                FragmentItem(0, "Home", R.drawable.ic_home_selector, HomeFragment::class.java),
+                FragmentItem(1, "Settings", R.drawable.ic_settings_selector, SettingsFragment::class.java),
             )
         )
 
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         //bottomNavigationView?.itemIconTintList = null
         bottomNavigationView?.menu?.apply {
             fragmentItemList.forEachIndexed { index, fragmentItem ->
-                add(Menu.NONE, index, index, fragmentItem.label)
+                add(Menu.NONE, fragmentItem.id, index, fragmentItem.label)
                     .setIcon(fragmentItem.iconRes)
             }
         }
