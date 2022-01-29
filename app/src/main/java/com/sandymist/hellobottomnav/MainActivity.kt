@@ -24,15 +24,15 @@ class MainActivity : AppCompatActivity() {
 
         fragmentItemList.addAll(
             listOf(
-                FragmentItem("Home", R.drawable.ic_home, HomeFragment::class.java),
-                FragmentItem("Settings", R.drawable.ic_settings, SettingsFragment::class.java),
+                FragmentItem("Home", R.drawable.ic_home_24, HomeFragment::class.java),
+                FragmentItem("Settings", R.drawable.ic_settings_24, SettingsFragment::class.java),
             )
         )
 
         loadFragment(0)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-        bottomNavigationView?.itemIconTintList = null
+        //bottomNavigationView?.itemIconTintList = null
         bottomNavigationView?.menu?.apply {
             fragmentItemList.forEachIndexed { index, fragmentItem ->
                 add(Menu.NONE, index, index, fragmentItem.label)
