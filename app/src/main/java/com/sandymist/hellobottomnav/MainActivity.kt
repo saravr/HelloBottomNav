@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -29,8 +30,6 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        loadFragment(0)
-
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
         //bottomNavigationView?.itemIconTintList = null
         bottomNavigationView?.menu?.apply {
@@ -46,6 +45,10 @@ class MainActivity : AppCompatActivity() {
                 loadFragment(fragmentItemList.indexOf(fragment))
             }
             true
+        }
+
+        bottomNavigationView?.menu?.get(1)?.itemId?.let {
+            bottomNavigationView.selectedItemId = it
         }
     }
 
